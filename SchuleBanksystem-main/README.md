@@ -145,4 +145,4 @@ Aus jedem dieser Zustände kann man jederzeit in einen der anderen Zustände wec
 </details>
 
 # Aufgaben Datenbank
-siehe Aufgaben.sqlite
+siehe Aufgaben.md
