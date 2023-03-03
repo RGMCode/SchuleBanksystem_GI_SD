@@ -1,0 +1,438 @@
+CREATE TABLE IF NOT EXISTS transactionstyp (
+TranTypID int NOT NULL,
+Description Text Not NULL
+);
+CREATE TABLE IF NOT EXISTS accstatus (
+AccStatusID int NOT NULL,
+Description text not Null
+);
+CREATE TABLE IF NOT EXISTS accounttyp (
+AccountTypID int NOT NULL,
+Description text not Null
+);
+CREATE TABLE IF NOT EXISTS acctypstaff (
+AccTypStaffID int NOT NULL,
+Description text not Null
+);
+CREATE TABLE IF NOT EXISTS card (
+CardID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+CardTyp TEXT NOT NULL,
+ValidityDate text NOT NULL,
+Cardnumber TEXT NOT NULL,
+Serial Text Not NULL
+);
+CREATE TABLE IF NOT EXISTS logintyp (
+LoginTyp integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+Description Text NOT NULL
+);
+CREATE TABLE IF NOT EXISTS sex (
+SexID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+SexDescription TEXT NOT NULL,
+Salutation TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS staffcontact (
+StaffID integer NOT NULL Primary Key ,
+Phonenumber  NOT NULL,
+Mail TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS staff (
+StaffID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+LastName text NOT NULL,
+FirstName text NOT NULL,
+Birthdate text NOT NULL,
+AccTypStaffID int NOT NULL,
+SexID int NOT NULL,
+Foreign Key (AccTypStaffID) References AccTypStaff (AccTypStaffID),
+Foreign Key (SexID) References Sex (SexID)
+Foreign Key (StaffID) References staffcontact (StaffID)
+);
+CREATE TABLE IF NOT EXISTS transactions (
+TransactionID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+FromAccountID int NOT NULL,
+ToAccountID int NOT NULL,
+Amount decimal(60,2) NOT NULL,
+Purpose text NOT NULL,
+TranTypID int NOT NULL,
+TransactionDateTime text NOT NULL,
+Foreign KEY (FromAccountID) References Account (AccountID),
+Foreign KEY (ToAccountID) References Account (AccountID),
+Foreign KEY (TranTypID) References transactionstyp (TranTypID)
+);
+
+CREATE TABLE IF NOT EXISTS "account" (
+AccountID integer primary key AUTOINCREMENT,
+CustomerID int NOT NULL,
+Balance decimal(60,2) NOT NULL,
+Dispositions decimal(60,2) NOT NULL,
+AccountTypID int NOT NULL,
+AccStatusID int NOT NULL,
+CardID int NOT NULL,
+IBAN TEXT NOT NULL,
+FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+FOREIGN KEY (AccountTypID) REFERENCES AccountTyp (AccountTypID),
+FOREIGN KEY (AccStatusID) REFERENCES AccStatus (AccStatusID),
+FOREIGN KEY (CardId) REFERENCES Card (CardID)
+);
+CREATE TABLE IF NOT EXISTS country (
+CountryID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+Name Text,
+Iso2 text,
+Iso3 Text
+);
+CREATE TABLE IF NOT EXISTS city (
+CityID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+ZIP int NOT NULL,
+City TEXT NOT NULL,
+CountryID int NOT NULL,
+FOREIGN KEY (CountryID) References Country (CountryID)
+);
+CREATE TABLE IF NOT EXISTS contact (
+ContactID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+Mail TEXT NOT NULL,
+Phonenumber  NOT NULL,
+Street TEXT NOT NULL,
+Housenumber  NOT NULL,
+CityID int NOT NULL,
+foreign key (CityID) References City (CityID)
+);
+CREATE TABLE IF NOT EXISTS bank (
+BankID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+Name text NOT NULL,
+Bic text NOT NULL,
+CityId int NOT NULL,
+FOREIGN Key (CityId) REFERENCES City (CityId)
+);
+CREATE TABLE IF NOT EXISTS customer (
+CustomerID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+LastName TEXT NOT NULL,
+FirstName TEXT NOT NULL,
+ContactID int NOT NULL,
+BankID int NOT NULL,
+Birthdate text NOT NULL,
+StaffID int NOT NULL,
+SexID int NOT NULL,
+Active int,
+Blocked int,
+FOREIGN KEY (ContactID) REFERENCES Contact (ContactID)
+FOREIGN KEY (BankID) REFERENCES Bank (BankID)
+FOREIGN KEY (StaffID) REFERENCES Staff (StaffID)
+FOREIGN KEY (SexID) REFERENCES Sex (SexID)
+);
+CREATE TABLE IF NOT EXISTS login (
+LoginID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+LoginTyp int NOT NULL,
+Password text,
+PIN text,
+CustomerID int,
+StaffID int,
+CardID int,
+FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId)
+FOREIGN KEY (StaffId) REFERENCES Staff (StaffId)
+FOREIGN KEY (CardId) REFERENCES Card (CardId)
+FOREIGN KEY (LoginTyp) REFERENCES logintyp (LoginTyp)
+);
+
+INSERT INTO transactionstyp (TranTypID, Description) VALUES
+(1, 'Einzahlung'),
+(2, 'Auszahlung'),
+(3, 'Überweisen');
+
+INSERT INTO account (AccountID, CustomerID, Balance, Dispositions, AccountTypID, AccStatusID, CardID, IBAN) VALUES
+(1, 1, '48.00', '500.00', 1, 1, 1, 'US1234567890123456789'),
+(2, 2, '38546.00', '700.00', 2, 1, 2, 'GB2345678901234567890'),
+(3, 3, '4.23', '800.00', 3, 2, 3, 'FR3456789012345678901'),
+(4, 4, '62081.00', '900.00', 1, 3, 4, 'DE4567890123456789012'),
+(5, 1, '62388.00', '1000.00', 2, 1, 5, 'IT5678901234567890123'),
+(6, 6, '4782.00', '1200.00', 3, 2, 6, 'NL6789012345678901234'),
+(7, 7, '100309.57', '1300.00', 1, 1, 7, 'RU7890123456789012345'),
+(8, 8, '61449.30', '1400.00', 2, 2, 8, 'NO8901234567890123456'),
+(9, 9, '371.23', '1500.00', 3, 3, 9, 'CA9012345678901234567'),
+(10, 1, '89.00', '1700.00', 1, 1, 10, 'IE0123456789012345678');
+
+INSERT INTO accounttyp (AccountTypID, Description) VALUES
+(1, 'Girokonto'),
+(2, 'Sparkonto'),
+(3, 'Festgeldkonto'),
+(4, 'Aktienkonto'),
+(5, 'Währungskonto'),
+(6, 'Kreditkonto'),
+(7, 'Baufinanzierung'),
+(8, 'Versicherung'),
+(9, 'Altersvorsorge'),
+(10, 'Investmentfonds');
+
+INSERT INTO accstatus (AccStatusID, Description) VALUES
+(1, 'aktiv'),
+(2, 'gesperrt'),
+(3, 'überziehung'),
+(4, 'beendet'),
+(5, 'ruhend'),
+(6, 'verzögert'),
+(7, 'offen'),
+(8, 'in Bearbeitung'),
+(9, 'abgelehnt');
+
+INSERT INTO acctypstaff (AccTypStaffID, Description) VALUES
+(1, 'Mitarbeiter'),
+(2, 'Manager'),
+(3, 'Entwickler'),
+(4, 'Admin');
+
+INSERT INTO bank (BankID, Name, BIC, CityID) VALUES
+(1, 'Dietrich Bonhoeffer Bank', 'DBBGER1N', 1),
+(2, 'Barclays', 'BARCGB22', 2),
+(3, 'HSBC', 'HBUKGB4B', 3),
+(4, 'Deutsche Bank', 'DEUTDEFF', 4),
+(5, 'Citi', 'CITIDEFF', 5),
+(6, 'Westpac', 'WPACAU2S', 6),
+(7, 'Sberbank', 'SBRFRUMM', 7),
+(8, 'Industrial and Commercial Bank of China', 'ICBKCNBJ', 8),
+(9, 'Royal Bank of Canada', 'ROYCCAT2', 9),
+(10, 'Unicredit', 'UNCRITMM', 10),
+(11, 'Bank of America', 'BOFAUS3N', 11);
+
+INSERT INTO card (CardID, CardTyp, ValidityDate, Cardnumber, Serial) VALUES
+(1, 'Visa', '2025-06-01 00:00:00', '1234567890123456', 'A1B2C3D4E5'),
+(2, 'Mastercard', '2024-12-31 00:00:00', '2345678901234567', 'B2C3D4E5F6'),
+(3, 'American Express', '2024-08-15 00:00:00', '3456789012345678', 'C3D4E5F6G7'),
+(4, 'Visa', '2025-02-01 00:00:00', '4567890123456789', 'D4E5F6G7H8'),
+(5, 'Mastercard', '2024-09-01 00:00:00', '5678901234567890', 'E5F6G7H8I9'),
+(6, 'American Express', '2024-06-01 00:00:00', '6789012345678901', 'F6G7H8I9J0'),
+(7, 'Visa', '2025-01-01 00:00:00', '7890123456789012', 'G7H8I9J0K1'),
+(8, 'Mastercard', '2024-12-01 00:00:00', '8901234567890123', 'H8I9J0K1L2'),
+(9, 'American Express', '2024-07-01 00:00:00', '9012345678901234', 'I9J0K1L2M3'),
+(10, 'Visa', '2025-05-01 00:00:00', '0123456789012345', 'J0K1L2M3N4');
+
+INSERT INTO city (CityID, ZIP, City, CountryID) VALUES
+(1, 10001, 'New York', 21),
+(2, 20002, 'London', 9),
+(3, 30003, 'Paris', 4),
+(4, 40004, 'Berlin', 1),
+(5, 50005, 'Rom', 5),
+(6, 60006, 'Amsterdam', 7),
+(7, 70007, 'Moscow', 15),
+(8, 80008, 'Oslo', 12),
+(9, 90009, 'Toronto', 22),
+(10, 10010, 'Dublin', 10);
+
+INSERT INTO contact (ContactID, Mail, Phonenumber, Street, Housenumber, CityID) VALUES
+(1, 'Daniel.Brill@gmail.com', '12345678', 'Brill Weg', '11', 1),
+(2, 'Lorenzo.von-Althoff@DBB.com', '23456789', 'Althof', '12', 2),
+(3, 'Rene.Mengedoth@aol.com', '34567890', 'Der Weg', '23', 3),
+(4, 'Piet.Limpke@volvo.com', '45678901', 'Volvo Straße', '45', 4),
+(5, 'julia.wagner@gmail.com', '56789012', 'Lemgoer Straße', '54', 5),
+(6, 'jan.becker@aol.com', '67890123', 'Hamelner Straße', '69', 6),
+(7, 'jana.bauer@freemail.com', '78901234', 'Münster Weg', '76', 7),
+(8, 'lena.hoffmann@gmx.com', '89012345', 'DBB Straße', '89', 8),
+(9, 'philipp.schmitz@freemail.com', '90123456', 'Münchener Straße', '96', 9),
+(10, 'sarah.friedrich@gmx.com', '01234567', 'Vilsa Straße', '101', 10);
+
+INSERT INTO country (CountryID, Name, ISO2, ISO3) VALUES
+(1, 'Deutschland', 'DE', 'DEU'),
+(2, 'Österreich', 'AT', 'AUT'),
+(3, 'Schweiz', 'CH', 'CHE'),
+(4, 'Frankreich', 'FR', 'FRA'),
+(5, 'Italien', 'IT', 'ITA'),
+(6, 'Spanien', 'ES', 'ESP'),
+(7, 'Niederlande', 'NL', 'NLD'),
+(8, 'Belgien', 'BE', 'BEL'),
+(9, 'Vereinigtes Königreich', 'GB', 'GBR'),
+(10, 'Irland', 'IE', 'IRL'),
+(11, 'Schweden', 'SE', 'SWE'),
+(12, 'Norwegen', 'NO', 'NOR'),
+(13, 'Dänemark', 'DK', 'DNK'),
+(14, 'Finnland', 'FI', 'FIN'),
+(15, 'Russland', 'RU', 'RUS'),
+(16, 'Ukraine', 'UA', 'UKR'),
+(17, 'Polen', 'PL', 'POL'),
+(18, 'Tschechische Republik', 'CZ', 'CZE'),
+(19, 'Ungarn', 'HU', 'HUN'),
+(20, 'Rumänien', 'RO', 'ROU'),
+(21, 'USA', 'US', 'USA'),
+(22, 'Kanada', 'CA', 'CAN');
+
+INSERT INTO customer (CustomerID, LastName, FirstName, ContactID, BankID, Birthdate, StaffID, SexID, Active, Blocked) VALUES
+(1, 'Brill', 'Daniel', 1, 1, '01.01.1997', 1, 1, 1, 0),
+(2, 'von Althoff', 'Lorenzo', 2, 1, '01.01.1995', 2, 3, 1, 0),
+(3, 'Mengedoth', 'René', 3, 2, '27.10.1989', 3, 1, 1, 0),
+(4, 'Lipke', 'Piet', 4, 2, '31.05.1993', 4, 1, 1, 0),
+(5, 'Wagner', 'Julia', 5, 3, '05.05.2000', 1, 2, 1, 0),
+(6, 'Becker', 'Jan', 6, 3, '06.06.2005', 2, 1, 1, 0),
+(7, 'Bauer', 'Jana', 7, 4, '07.07.2010', 4, 2, 0, 0),
+(8, 'Hoffmann', 'Lena', 8, 4, '08.08.2001', 3, 2, 0, 0),
+(9, 'Schmitz', 'Kim', 9, 5, '09.09.1980', 2, 1, 1, 0),
+(10, 'Friedrich', 'Sarah', 10, 5, '10.10.2005', 1, 3, 0, 0);
+
+INSERT INTO login (LoginID, LoginTyp, Password, PIN, CustomerID, StaffID, CardID) VALUES
+(1, 1, 'password1', NULL, 1, NULL, NULL),
+(2, 1, 'password2', NULL, 2, NULL, NULL),
+(3, 1, 'password3', NULL, 3, NULL, NULL),
+(4, 1, 'password4', NULL, 4, NULL, NULL),
+(5, 1, 'password5', NULL, 5, NULL, NULL),
+(6, 1, 'password6', NULL, 6, NULL, NULL),
+(7, 1, 'password7', NULL, 7, NULL, NULL),
+(8, 1, 'password8', NULL, 8, NULL, NULL),
+(9, 1, 'password9', NULL, 9, NULL, NULL),
+(10, 1, 'password10', NULL, 10, NULL, NULL),
+(11, 3, NULL, 1234, NULL, NULL, 1),
+(12, 3, NULL, 2345, NULL, NULL, 2),
+(13, 3, NULL, 3456, NULL, NULL, 3),
+(14, 3, NULL, 4567, NULL, NULL, 4),
+(15, 3, NULL, 5678, NULL, NULL, 5),
+(16, 3, NULL, 6789, NULL, NULL, 6),
+(17, 3, NULL, 7890, NULL, NULL, 7),
+(18, 3, NULL, 8901, NULL, NULL, 8),
+(19, 3, NULL, 9012, NULL, NULL, 9),
+(20, 3, NULL, 123, NULL, NULL, 10),
+(21, 2, 'password11', NULL, NULL, 1, NULL),
+(22, 2, 'password12', NULL, NULL, 2, NULL),
+(23, 2, 'password13', NULL, NULL, 3, NULL),
+(24, 2, 'password14', NULL, NULL, 4, NULL);
+
+INSERT INTO logintyp (LoginTyp, Description) VALUES
+(1, 'Customer'),
+(2, 'Staff'),
+(3, 'Card');
+
+INSERT INTO sex (SexID, SexDescription, Salutation) VALUES
+(1, 'M', 'Herr'),
+(2, 'W', 'Frau'),
+(3, 'D', '');
+
+INSERT INTO staff (StaffID, LastName, FirstName, Birthdate, AccTypStaffID, SexID) VALUES
+(1, 'Brill', 'Daniel', '23.09.1998', 4, 1),
+(2, 'von Althoff', 'Lorenzo', '01.01.1995', 3, 3),
+(3, 'Lipke', 'Piet', '31.05,1993', 2, 1),
+(4, 'Mengedoth', 'René', '01.01.0001', 1, 1);
+
+INSERT INTO staffcontact (StaffID, Phonenumber, Mail) VALUES
+(1, '213456', 'Brill.Daniel@dbb.com'),
+(2, '765454', 'vonAlthof.Lorenzo@dbb.com'),
+(3, '765454', 'Lipke.Piet@dbb.com'),
+(4, '765454', 'Mengedoth.Rene@dbb.com');
+
+INSERT INTO transactions (TransactionID, FromAccountID, ToAccountID, Amount, Purpose, TranTypID, TransactionDateTime) VALUES
+(1, 1, 1, '1.00', '', 1, '2023-02-16 11:58:24'),
+(2, 1, 1, '13.00', '', 1, '2023-02-16 11:59:52'),
+(3, 1, 1, '246.00', '', 1, '2023-02-16 12:00:18'),
+(4, 1, 1, '0.00', '', 1, '2023-02-16 12:01:39'),
+(5, 1, 1, '67.00', '', 1, '2023-02-16 12:04:52'),
+(6, 1, 1, '0.66', '', 1, '2023-02-16 12:06:04'),
+(7, 1, 1, '1345.00', '', 1, '2023-02-16 12:06:27'),
+(8, 1, 1, '143245.00', '', 1, '2023-02-16 12:06:44'),
+(9, 1, 1, '123.45', '', 1, '2023-02-16 12:09:19'),
+(10, 1, 1, '0.53', '', 1, '2023-02-16 12:09:38'),
+(11, 1, 1, '0.46', '', 1, '2023-02-16 12:10:01'),
+(12, 1, 1, '18001.10', '', 2, '2023-02-16 12:15:06'),
+(13, 1, 1, '201280.00', '', 2, '2023-02-16 12:22:58'),
+(14, 1, 1, '1.00', '', 2, '2023-02-16 12:23:09'),
+(15, 1, 1, '500.00', '', 1, '2023-02-16 12:23:38'),
+(16, 1, 1, '0.01', '', 1, '2023-02-16 12:23:46'),
+(17, 1, 1, '324343.00', '', 1, '2023-02-16 12:23:55'),
+(18, 1, 1, '1.11', '', 2, '2023-02-16 12:36:28'),
+(19, 1, 1, '3200000.00', '', 2, '2023-02-16 12:37:11'),
+(20, 1, 1, '28000000.00', '', 2, '2023-02-16 12:37:28'),
+(21, 1, 1, '33.00', '', 1, '2023-02-17 12:31:54'),
+(22, 1, 1, '2.09', '', 1, '2023-02-17 12:32:00'),
+(23, 1, 1, '9.01', '', 1, '2023-02-17 12:32:06'),
+(24, 1, 1, '2.40', '', 2, '2023-02-17 12:32:11'),
+(25, 1, 1, '10.30', '', 2, '2023-02-17 12:32:15'),
+(26, 1, 1, '1.11', 'Wasser', 3, '2023-02-17 19:10:18'),
+(27, 1, 1, '1.11', 'Wasser', 3, '2023-02-17 19:10:18'),
+(28, 1, 7, '2.01', 'Pommes', 3, '2023-02-17 19:10:57'),
+(29, 1, 7, '2.01', 'Kaugummi', 3, '2023-02-17 19:10:57'),
+(30, 1, 7, '1234.56', 'Apple MacBook Air M2', 3, '2023-02-17 20:36:21'),
+(31, 1, 7, '1234.56', 'Lenovo ThinkPad', 3, '2023-02-17 20:36:21'),
+(32, 1, 9, '1.23', 'China Nudeln', 3, '2023-02-17 20:36:44'),
+(33, 1, 9, '1.23', 'China Nudeln', 3, '2023-02-17 20:36:44'),
+(34, 1, 10, '9.87', 'Döner Teller', 3, '2023-02-17 20:37:13'),
+(35, 1, 10, '9.87', 'Döner Teller', 3, '2023-02-17 20:37:13'),
+(36, 1, 1, '2314.00', '', 1, '2023-02-20 09:08:34'),
+(37, 1, 1, '13.00', '', 2, '2023-02-20 09:08:41'),
+(38, 1, 1, '0.61', '', 2, '2023-02-20 09:09:02'),
+(39, 1, 10, '1.50', 'Test 1,50 €', 3, '2023-02-22 20:59:08'),
+(40, 1, 10, '1.50', 'Test 1,50 €', 3, '2023-02-22 21:02:13'),
+(41, 1, 10, '1.50', 'Test 1,50 €', 3, '2023-02-22 21:02:37'),
+(42, 1, 10, '1.23', '1,23€ Ayran', 3, '2023-02-22 21:24:36'),
+(43, 1, 10, '0.27', 'abc', 3, '2023-02-22 21:25:13'),
+(44, 1, 10, '28.00', 'Bestellnummer: 23434554', 3, '2023-02-22 21:29:28'),
+(45, 1, 8, '50.00', 'Norwegen!', 3, '2023-02-23 11:36:40'),
+(46, 1, 8, '50.00', 'Norwegen!', 3, '2023-02-23 11:36:40'),
+(47, 1, 1, '10.00', '', 1, '2023-02-23 11:37:21'),
+(48, 1, 1, '50.00', '', 2, '2023-02-23 11:37:25'),
+(49, 1, 1, '10.00', '', 2, '2023-02-23 11:37:39'),
+(50, 1, 1, '850.59', '', 1, '2023-02-23 11:37:56'),
+(51, 1, 8, '1.00', '1', 3, '2023-02-23 11:39:26'),
+(52, 1, 8, '1.00', '1', 3, '2023-02-23 11:39:26'),
+(53, 1, 8, '1.30', 't', 3, '2023-02-23 11:39:46'),
+(54, 1, 8, '1.30', 't', 3, '2023-02-23 11:39:46'),
+(55, 1, 8, '100.00', 'test', 3, '2023-02-23 11:40:29'),
+(56, 1, 8, '100.00', 'test', 3, '2023-02-23 11:40:29'),
+(57, 1, 8, '1.00', 'test', 3, '2023-02-23 11:44:24'),
+(58, 1, 8, '1.00', 'test', 3, '2023-02-23 11:45:23'),
+(59, 1, 10, '123.00', '123€ für Service', 3, '2023-02-23 11:51:16'),
+(60, 1, 5, '-1.00', 'Test', 3, '2023-02-23 11:55:24'),
+(61, 5, 1, '1.00', 'Test', 3, '2023-02-23 11:55:24'),
+(62, 2, 10, '-1.00', 'test', 3, '2023-02-23 12:24:41'),
+(63, 2, 10, '-1.00', 'Spende', 3, '2023-02-23 12:29:52'),
+(64, 10, 2, '1.00', 'Spende', 3, '2023-02-23 12:29:53'),
+(65, 1, 10, '-3.21', 'Für Daniel', 3, '2023-02-23 12:29:56'),
+(66, 2, 10, '-1.00', 'spende', 3, '2023-02-23 12:31:57'),
+(67, 10, 2, '1.00', 'spende', 3, '2023-02-23 12:31:58'),
+(68, 2, 1, '-1000.00', 'test', 3, '2023-02-24 09:41:01'),
+(69, 1, 2, '1000.00', 'test', 3, '2023-02-24 09:41:02'),
+(70, 1, 10, '-1.53', 'Test Überweisung', 3, '2023-02-24 09:46:18'),
+(71, 10, 1, '1.53', 'Test Überweisung', 3, '2023-02-24 09:46:18'),
+(72, 1, 2, '-1.00', 'test', 3, '2023-02-24 10:12:58'),
+(73, 2, 1, '1.00', 'test', 3, '2023-02-24 10:12:59'),
+(74, 1, 10, '-1.99', 'Test qefasfwsrgesrf', 3, '2023-02-24 10:44:47'),
+(75, 10, 1, '1.99', 'Test qefasfwsrgesrf', 3, '2023-02-24 10:44:47'),
+(76, 1, 10, '-0.12', 'Gebühr', 3, '2023-02-24 12:29:27'),
+(77, 10, 1, '0.12', 'Gebühr', 3, '2023-02-24 12:29:27'),
+(78, 1, 10, '540.00', 'Minijob', 3, '2023-02-24 09:56:18'),
+(79, 1, 10, '-1.23', '23r4etghf', 3, '2023-02-26 00:27:36'),
+(80, 10, 1, '1.23', '23r4etghf', 3, '2023-02-26 00:27:36'),
+(81, 1, 10, '-0.98', 'abcde', 3, '2023-02-26 13:57:05'),
+(82, 10, 1, '0.98', 'abcde', 3, '2023-02-26 13:57:05'),
+(83, 1, 10, '-0.11', 'edcba', 3, '2023-02-26 14:01:56'),
+(84, 10, 1, '0.11', 'edcba', 3, '2023-02-26 14:01:56'),
+(85, 1, 10, '-0.11', 'edcba', 3, '2023-02-26 14:03:29'),
+(86, 10, 1, '0.11', 'edcba', 3, '2023-02-26 14:03:29'),
+(87, 1, 10, '-0.21', '21cent', 3, '2023-02-26 14:06:04'),
+(88, 10, 1, '0.21', '21cent', 3, '2023-02-26 14:06:04'),
+(92, 1, 1, '5000.00', '', 1, '2023-02-27 08:29:11'),
+(97, 5, 5, '558.67', '', 1, '2023-02-27 08:37:00'),
+(184, 1, 3, '-1.11', '1,11 Spende', 3, '2023-02-27 23:02:07'),
+(185, 3, 1, '1.11', '1,11 Spende', 3, '2023-02-27 23:02:07'),
+(186, 1, 3, '-1.23', 'abc', 3, '2023-02-27 23:10:21'),
+(187, 3, 1, '1.23', 'abc', 3, '2023-02-27 23:10:21'),
+(188, 1, 3, '-10.00', '10€ Ebay', 3, '2023-02-27 23:30:01'),
+(189, 3, 1, '10.00', '10€ Ebay', 3, '2023-02-27 23:30:01'),
+(190, 1, 3, '-1.23', 'abc', 3, '2023-02-27 23:31:42'),
+(191, 3, 1, '1.23', 'abc', 3, '2023-02-27 23:31:42'),
+(192, 1, 10, '-73.44', 'Tankstelle Lipperland', 3, '2023-02-27 23:36:29'),
+(193, 10, 1, '73.44', 'Tankstelle Lipperland', 3, '2023-02-27 23:36:29'),
+(194, 1, 10, '-73.44', 'Tankstelle Lipperland', 3, '2023-02-27 23:37:07'),
+(195, 10, 1, '73.44', 'Tankstelle Lipperland', 3, '2023-02-27 23:37:07'),
+(196, 1, 10, '-100.00', 'Geld', 3, '2023-02-27 23:45:05'),
+(197, 10, 1, '100.00', 'Geld', 3, '2023-02-27 23:45:05'),
+(200, 1, 10, '-9.00', '123wf', 3, '2023-02-27 23:47:06'),
+(201, 10, 1, '9.00', '123wf', 3, '2023-02-27 23:47:06'),
+(202, 1, 1, '-9.00', 'Tamam Döner Teller ', 3, '2023-02-27 23:54:44'),
+(203, 1, 1, '9.00', 'Tamam Döner Teller ', 3, '2023-02-27 23:54:44'),
+(204, 1, 1, '-1.00', '1€', 3, '2023-02-27 23:55:28'),
+(205, 1, 1, '1.00', '1€', 3, '2023-02-27 23:55:28'),
+(206, 1, 1, '-2.00', 'abc', 3, '2023-02-27 23:56:10'),
+(207, 1, 1, '2.00', 'abc', 3, '2023-02-27 23:56:10'),
+(208, 1, 1, '-8.00', 'etwas', 3, '2023-02-27 23:57:34'),
+(209, 1, 1, '8.00', 'etwas', 3, '2023-02-27 23:57:34'),
+(210, 1, 1, '-1.00', '1€', 3, '2023-02-27 23:59:32'),
+(211, 1, 1, '1.00', '1€', 3, '2023-02-27 23:59:32'),
+(212, 1, 1, '-2.00', 'Bus', 3, '2023-02-28 00:01:00'),
+(213, 1, 1, '2.00', 'Bus', 3, '2023-02-28 00:01:00'),
+(214, 2, 1, '-1.00', 'Spende', 3, '2023-02-28 10:05:11'),
+(215, 1, 2, '1.00', 'Spende', 3, '2023-02-28 10:05:11'),
+(216, 1, 1, '50.00', '', 1, '2023-02-28 10:06:40'),
+(217, 1, 1, '4.00', '', 2, '2023-02-28 10:06:47'),
+(218, 1, 3, '-2.00', 'Spende', 3, '2023-02-28 10:07:43'),
+(219, 3, 1, '2.00', 'Spende', 3, '2023-02-28 10:07:44');

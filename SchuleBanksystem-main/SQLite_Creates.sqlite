@@ -1,0 +1,202 @@
+/* ******************************************************************************** */
+
+CREATE TABLE Customer
+(
+    CustomerID INT  PRIMARY KEY AUTOINCREMENT,
+    LastName   TEXT NOT NULL,
+    FirstName  TEXT NOT NULL,
+    ContactID  INT  NOT NULL,
+    BankID     INT  NOT NULL,
+    Birthdate  TEXT NOT NULL,
+    StaffID    INT  NOT NULL,
+    SexID      INT  NOT NULL,
+    Active     INT  NOT NULL,
+    Blocked    INT  NOT NULL,
+    FOREIGN KEY (StaffID) REFERENCES Staff (StaffID),
+    FOREIGN KEY (ContactID) REFERENCES Contact (ContactID),
+    FOREIGN KEY (BankID) REFERENCES Bank (BankID),
+    FOREIGN KEY (SexID) REFERENCES Sex (SexID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Contact
+(
+    ContactID   INT  PRIMARY KEY AUTOINCREMENT,
+    Mail        TEXT NOT NULL,
+    Phonenumber TEXT NOT NULL,
+    Street      TEXT NOT NULL,
+    Housenumber TEXT NOT NULL,
+    CityID      INT  NOT NULL,
+    FOREIGN KEY (CityID) REFERENCES City (CityID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE City
+(
+    CityID    INT  PRIMARY KEY AUTOINCREMENT,
+    ZIP       INT  NOT NULL,
+    City      TEXT NOT NULL,
+    CountryID INT  NOT NULL,
+    FOREIGN KEY (CountryID) REFERENCES Country (CountryID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Country
+(
+    CountryID INT  PRIMARY KEY AUTOINCREMENT,
+    Name      TEXT NOT NULL,
+    ISO2      TEXT NOT NULL,
+    ISO3      TEXT NOT NULL
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Account
+(
+    AccountID    INT     PRIMARY KEY AUTOINCREMENT,
+    CustomerID   INT     NOT NULL,
+    Balance      DECIMAL NOT NULL,
+    Dispositions DECIMAL NOT NULL,
+    AccountTypID INT     NOT NULL,
+    AccStatusID  INT     NOT NULL,
+    CardID       INT     NOT NULL,
+    IBAN         TEXT    NOT NULL,
+    FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+    FOREIGN KEY (AccountTypID) REFERENCES AccountTyp (AccountTypID),
+    FOREIGN KEY (AccStatusID) REFERENCES AccStatus (AccStatusID),
+    FOREIGN KEY (CardID) REFERENCES Card (CardID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Transactions
+(
+    TransactionID       INT     PRIMARY KEY AUTOINCREMENT,
+    FromAccountID       INT     NOT NULL,
+    ToAccountID         INT     NOT NULL,
+    Amount              DECIMAL NOT NULL,
+    Purpose             TEXT    NOT NULL,
+    TranTypID           INT     NOT NULL,
+    TransactionDateTime Text    NOT NULL,
+    FOREIGN KEY (FromAccountID) REFERENCES Account (AccountID),
+    FOREIGN KEY (ToAccountID) REFERENCES Account (AccountID),
+    FOREIGN KEY (TranTypID) REFERENCES TransactionsTyp (TranTypID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Staff
+(
+    StaffID       INT  PRIMARY KEY AUTOINCREMENT,
+    LastName      TEXT NOT NULL,
+    FirstName     TEXT NOT NULL,
+    Birthdate     TEXT NOT NULL,
+    AccTypStaffID INT  NOT NULL,
+    SexID         INT  NOT NULL,
+    FOREIGN KEY (AccTypStaffID) REFERENCES AccTypStaff (AccTypStaffID),
+    FOREIGN KEY (SexID) REFERENCES Sex (SexID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE StaffContact
+(
+    StaffID     INT,
+    Phonenumber TEXT NOT NULL,
+    Mail        TEXT NOT NULL,
+    PRIMARY KEY (StaffID),
+    FOREIGN KEY (StaffID) REFERENCES Staff (StaffID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE AccTypStaff
+(
+    AccTypStaffID INT  PRIMARY KEY,
+    Description   TEXT NOT NULL
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE AccountTyp
+(
+    AccountTypID INT  PRIMARY KEY,
+    Description  TEXT NOT NULL
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Card
+(
+    CardID       INT  PRIMARY KEY AUTOINCREMENT,
+    CardTyp      TEXT NOT NULL,
+    ValidityDate TEXT NOT NULL,
+    Cardnumber   TEXT NOT NULL,
+    Serial       TEXT NOT NULL
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Bank
+(
+    BankID INT  PRIMARY KEY AUTOINCREMENT,
+    Name   TEXT NOT NULL,
+    BIC    TEXT NOT NULL,
+    CityID INT  NOT NULL,
+    FOREIGN KEY (CityID) REFERENCES City (CityID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE AccStatus
+(
+    AccStatusID INT  PRIMARY KEY,
+    Description TEXT NOT NULL
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE TransactionsTyp
+(
+    TranTypID   INT  PRIMARY KEY,
+    Description TEXT NOT NULL
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Login
+(
+    LoginID    INT PRIMARY KEY AUTOINCREMENT,
+    LoginTyp   INT NOT NULL,
+    Password   TEXT,
+    PIN        INT,
+    CustomerID INT,
+    StaffID    INT,
+    CardID     INT,
+    FOREIGN KEY (CardID) REFERENCES Card (CardID),
+    FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+    FOREIGN KEY (StaffID) REFERENCES Staff (StaffID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE LoginTyp
+(
+    LoginTyp    INT  NOT NULL,
+    Description TEXT NOT NULL,
+    FOREIGN KEY (LoginTyp) REFERENCES Login (LoginTyp)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Sex
+(
+    SexID          INT  PRIMARY KEY AUTOINCREMENT,
+    SexDescription TEXT NOT NULL,
+    Salutation     TEXT NOT NULL
+);
+
+/* ******************************************************************************** */

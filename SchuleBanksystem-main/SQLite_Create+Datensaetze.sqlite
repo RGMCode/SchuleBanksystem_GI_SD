@@ -1,0 +1,379 @@
+/* ******************************************************************************** */
+
+CREATE TABLE Customer
+(
+    CustomerID INT  PRIMARY KEY AUTOINCREMENT,
+    LastName   TEXT NOT NULL,
+    FirstName  TEXT NOT NULL,
+    ContactID  INT  NOT NULL,
+    BankID     INT  NOT NULL,
+    Birthdate  TEXT NOT NULL,
+    StaffID    INT  NOT NULL,
+    SexID      INT  NOT NULL,
+    FOREIGN KEY (StaffID) REFERENCES Staff (StaffID),
+    FOREIGN KEY (ContactID) REFERENCES Contact (ContactID),
+    FOREIGN KEY (BankID) REFERENCES Bank (BankID),
+    FOREIGN KEY (SexID) REFERENCES Sex (SexID)
+);
+
+INSERT INTO Customer (LastName, FirstName, ContactID, BankID, Birthdate, StaffID, SexID)
+VALUES ('Brill', 'Daniel', 1, 1, '01.01.1997', 1, 1),
+       ('von Althoff', 'Lorenzo', 2, 1, '01.01.1995', 2, 3),
+       ('Mengedoth', 'René', 3, 2, '27.10.1989', 3, 1),
+       ('Lipke', 'Piet', 4, 2, '31.05.1993', 4, 1),
+       ('Wagner', 'Julia', 5, 3, '05.05.2000', 5, 2),
+       ('Becker', 'Jan', 6, 3, '06.06.2005', 5, 1),
+       ('Bauer', 'Jana', 7, 4, '07.07.2010', 4, 2),
+       ('Hoffmann', 'Lena', 8, 4, '08.08.2001', 3, 2),
+       ('Schmitz', 'Kim', 9, 5, '09.09.1980', 2, 1),
+       ('Friedrich', 'Sarah', 10, 5, '10.10.2005', 1, 3);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Contact
+(
+    ContactID   INT  PRIMARY KEY AUTOINCREMENT,
+    Mail        TEXT NOT NULL,
+    Phonenumber TEXT NOT NULL,
+    Street      TEXT NOT NULL,
+    Housenumber TEXT NOT NULL,
+    CityID      INT  NOT NULL,
+    FOREIGN KEY (CityID) REFERENCES City (CityID)
+);
+
+INSERT INTO Contact (Mail, Phonenumber, Street, Housenumber, CityID)
+VALUES ('Daniel.Brill@gmail.com', '12345678', 'Brill Weg', '11', 1),
+       ('Lorenzo.von-Althoff@DBB.com', '23456789', 'Althof', '12', 2),
+       ('Rene.Mengedoth@aol.com', '34567890', 'Der Weg', '23', 3),
+       ('Piet.Limpke@volvo.com', '45678901', 'Volvo Straße', '45', 4),
+       ('julia.wagner@gmail.com', '56789012', 'Lemgoer Straße', '54', 5),
+       ('jan.becker@aol.com', '67890123', 'Hamelner Straße', '69', 6),
+       ('jana.bauer@freemail.com', '78901234', 'Münster Weg', '76', 7),
+       ('lena.hoffmann@gmx.com', '89012345', 'DBB Straße', '89', 8),
+       ('philipp.schmitz@freemail.com', '90123456', 'Münchener Straße', '96', 9),
+       ('sarah.friedrich@gmx.com', '01234567', 'Vilsa Straße', '101', 10);
+
+/* ******************************************************************************** */
+
+CREATE TABLE City
+(
+    CityID    INT  PRIMARY KEY AUTOINCREMENT,
+    ZIP       INT  NOT NULL,
+    City      TEXT NOT NULL,
+    CountryID INT  NOT NULL,
+    FOREIGN KEY (CountryID) REFERENCES Country (CountryID)
+);
+
+INSERT INTO City (ZIP, City, CountryID)
+VALUES (10001, 'New York', 21),
+       (20002, 'London', 9),
+       (30003, 'Paris', 4),
+       (40004, 'Berlin', 1),
+       (50005, 'Rom', 5),
+       (60006, 'Amsterdam', 7),
+       (70007, 'Moscow', 15),
+       (80008, 'Oslo', 12),
+       (90009, 'Toronto', 22),
+       (10010, 'Dublin', 10);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Country
+(
+    CountryID INT  PRIMARY KEY AUTOINCREMENT,
+    Name      TEXT NOT NULL,
+    ISO2      TEXT NOT NULL,
+    ISO3      TEXT NOT NULL
+);
+
+INSERT INTO Country (Name, ISO2, ISO3)
+VALUES ('Deutschland', 'DE', 'DEU'),
+       ('Österreich', 'AT', 'AUT'),
+       ('Schweiz', 'CH', 'CHE'),
+       ('Frankreich', 'FR', 'FRA'),
+       ('Italien', 'IT', 'ITA'),
+       ('Spanien', 'ES', 'ESP'),
+       ('Niederlande', 'NL', 'NLD'),
+       ('Belgien', 'BE', 'BEL'),
+       ('Vereinigtes Königreich', 'GB', 'GBR'),
+       ('Irland', 'IE', 'IRL'),
+       ('Schweden', 'SE', 'SWE'),
+       ('Norwegen', 'NO', 'NOR'),
+       ('Dänemark', 'DK', 'DNK'),
+       ('Finnland', 'FI', 'FIN'),
+       ('Russland', 'RU', 'RUS'),
+       ('Ukraine', 'UA', 'UKR'),
+       ('Polen', 'PL', 'POL'),
+       ('Tschechische Republik', 'CZ', 'CZE'),
+       ('Ungarn', 'HU', 'HUN'),
+       ('Rumänien', 'RO', 'ROU'),
+       ('USA', 'US', 'USA'),
+       ('Kanada', 'CA', 'CAN');
+
+/* ******************************************************************************** */
+
+CREATE TABLE Account
+(
+    AccountID    INT     PRIMARY KEY AUTOINCREMENT,
+    CustomerID   INT     NOT NULL,
+    Balance      DECIMAL NOT NULL,
+    Dispositions DECIMAL NOT NULL,
+    AccountTypID INT     NOT NULL,
+    AccStatusID  INT     NOT NULL,
+    CardID       INT     NOT NULL,
+    IBAN         TEXT    NOT NULL,
+    FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+    FOREIGN KEY (AccountTypID) REFERENCES AccountTyp (AccountTypID),
+    FOREIGN KEY (AccStatusID) REFERENCES AccStatus (AccStatusID),
+    FOREIGN KEY (CardID) REFERENCES Card (CardID)
+);
+
+INSERT INTO Account (CustomerID, Balance, Dispositions, AccountTypID, AccStatusID, CardID, IBAN)
+VALUES (1, 73740.18, 500.00, 1, 1, 1, 'US1234567890123456789'),
+       (2, 39550.01, 700.00, 2, 1, 2, 'GB2345678901234567890'),
+       (3, 35948.10, 800.00, 3, 2, 3, 'FR3456789012345678901'),
+       (4, 62080.55, 900.00, 1, 3, 4, 'DE4567890123456789012'),
+       (5, 61838.73, 1000.00, 2, 1, 5, 'IT5678901234567890123'),
+       (6, 4782.32, 1200.00, 3, 2, 6, 'NL6789012345678901234'),
+       (7, 99073.24, 1300.00, 1, 1, 7, 'RU7890123456789012345'),
+       (8, 61295.63, 1400.00, 2, 2, 8, 'NO8901234567890123456'),
+       (9, 370.00, 1500.00, 3, 3, 9, 'CA9012345678901234567'),
+       (10, 52204.86, 1700.00, 1, 1, 10, 'IE0123456789012345678');
+       
+/* ******************************************************************************** */
+
+CREATE TABLE Transactions
+(
+    TransactionID       INT     PRIMARY KEY AUTOINCREMENT,
+    FromAccountID       INT     NOT NULL,
+    ToAccountID         INT     NOT NULL,
+    Amount              DECIMAL NOT NULL,
+    Description         TEXT    NOT NULL,
+    TranTypID           INT     NOT NULL,
+    TransactionDateTime Text    NOT NULL,
+    FOREIGN KEY (FromAccountID) REFERENCES Account (AccountID),
+    FOREIGN KEY (ToAccountID) REFERENCES Account (AccountID),
+    FOREIGN KEY (TranTypID) REFERENCES TransactionsTyp (TranTypID)
+);
+
+/* ******************************************************************************** */
+
+CREATE TABLE Staff
+(
+    StaffID       INT  PRIMARY KEY AUTOINCREMENT,
+    LastName      TEXT NOT NULL,
+    FirstName     TEXT NOT NULL,
+    Birthdate     TEXT NOT NULL,
+    AccTypStaffID INT  NOT NULL,
+    SexID         INT  NOT NULL,
+    FOREIGN KEY (AccTypStaffID) REFERENCES AccTypStaff (AccTypStaffID),
+    FOREIGN KEY (SexID) REFERENCES Sex (SexID)
+);
+
+INSERT INTO Staff (LastName, FirstName, Birthdate, AccTypStaffID, SexID)
+VALUES ('Brill', 'Daniel', '23.09.1998', 4, 1),
+       ('von Althoff', 'Lorenzo', '01.01.1995', 3, 3),
+       ('Lipke', 'Piet', '31.05,1993', 2, 1),
+       ('Mengedoth', 'René', '01.01.0001', 1, 1);
+
+/* ******************************************************************************** */
+
+CREATE TABLE StaffContact
+(
+    StaffID     INT,
+    Phonenumber TEXT NOT NULL,
+    Mail        TEXT NOT NULL,
+    PRIMARY KEY (StaffID),
+    FOREIGN KEY (StaffID) REFERENCES Staff (StaffID)
+);
+
+INSERT INTO StaffContact (StaffID, Phonenumber, Mail)
+VALUES (1, '213456', 'Brill.Daniel@dbb.com'),
+       (2, '765454', 'vonAlthof.Lorenzo@dbb.com'),
+       (3, '765454', 'Lipke.Piet@dbb.com'),
+       (4, '765454', 'Mengedoth.Rene@dbb.com');
+
+/* ******************************************************************************** */
+
+CREATE TABLE AccTypStaff
+(
+    AccTypStaffID INT  PRIMARY KEY,
+    Description   TEXT NOT NULL
+);
+
+INSERT INTO AccTypStaff (AccTypStaffID, Description)
+VALUES (1, 'Mitarbeiter'),
+       (2, 'Manager'),
+       (3, 'Entwickler'),
+       (4, 'Admin');
+
+/* ******************************************************************************** */
+
+CREATE TABLE AccountTyp
+(
+    AccountTypID INT  PRIMARY KEY,
+    Description  TEXT NOT NULL
+);
+
+INSERT INTO AccountTyp (AccountTypID, Description)
+VALUES (1, 'Girokonto'),
+       (2, 'Sparkonto'),
+       (3, 'Festgeldkonto'),
+       (4, 'Aktienkonto'),
+       (5, 'Währungskonto'),
+       (6, 'Kreditkonto'),
+       (7, 'Baufinanzierung'),
+       (8, 'Versicherung'),
+       (9, 'Altersvorsorge'),
+       (10, 'Investmentfonds');
+
+/* ******************************************************************************** */
+
+CREATE TABLE Card
+(
+    CardID       INT  PRIMARY KEY AUTOINCREMENT,
+    CardTyp      TEXT NOT NULL,
+    ValidityDate TEXT NOT NULL,
+    Cardnumber   TEXT NOT NULL,
+    Serial       TEXT NOT NULL
+);
+
+INSERT INTO Card (CardTyp, ValidityDate, Cardnumber, Serial)
+VALUES ('Visa', '2025-06-01', '1234567890123456', 'A1B2C3D4E5'),
+       ('Mastercard', '2024-12-31', '2345678901234567', 'B2C3D4E5F6'),
+       ('American Express', '2024-08-15', '3456789012345678', 'C3D4E5F6G7'),
+       ('Visa', '2025-02-01', '4567890123456789', 'D4E5F6G7H8'),
+       ('Mastercard', '2024-09-01', '5678901234567890', 'E5F6G7H8I9'),
+       ('American Express', '2024-06-01', '6789012345678901', 'F6G7H8I9J0'),
+       ('Visa', '2025-01-01', '7890123456789012', 'G7H8I9J0K1'),
+       ('Mastercard', '2024-12-01', '8901234567890123', 'H8I9J0K1L2'),
+       ('American Express', '2024-07-01', '9012345678901234', 'I9J0K1L2M3'),
+       ('Visa', '2025-05-01', '0123456789012345', 'J0K1L2M3N4');
+
+/* ******************************************************************************** */
+
+CREATE TABLE Bank
+(
+    BankID INT  PRIMARY KEY AUTOINCREMENT,
+    Name   TEXT NOT NULL,
+    BIC    TEXT NOT NULL,
+    CityID INT  NOT NULL,
+    FOREIGN KEY (CityID) REFERENCES City (CityID)
+);
+
+INSERT INTO Bank (Name, BIC, CityID)
+VALUES ('Dietrich Bonhoeffer Bank', 'DBBGER1N', 1),
+       ('Barclays', 'BARCGB22', 2),
+       ('Crédit Agricole', 'AGRIFRPP', 3),
+       ('Deutsche Bank', 'DEUTDEFF', 4),
+       ('Mitsubishi UFJ Financial Group', 'BOTKJPJT', 5),
+       ('Westpac', 'WPACAU2S', 6),
+       ('Sberbank', 'SBRFRUMM', 7),
+       ('Industrial and Commercial Bank of China', 'ICBKCNBJ', 8),
+       ('Royal Bank of Canada', 'ROYCCAT2', 9),
+       ('Unicredit', 'UNCRITMM', 10),
+       ('Bank of America', 'BOFAUS3N', 11);
+
+/* ******************************************************************************** */
+
+CREATE TABLE AccStatus
+(
+    AccStatusID INT  PRIMARY KEY,
+    Description TEXT NOT NULL
+);
+
+INSERT INTO AccStatus (AccStatusID, Description)
+VALUES (1, 'aktiv'),
+       (2, 'gesperrt'),
+       (3, 'überziehung'),
+       (4, 'beendet'),
+       (5, 'ruhend'),
+       (6, 'verzögert'),
+       (7, 'offen'),
+       (8, 'in Bearbeitung'),
+       (9, 'abgelehnt');
+
+/* ******************************************************************************** */
+
+CREATE TABLE TransactionsTyp
+(
+    TranTypID   INT  PRIMARY KEY,
+    Description TEXT NOT NULL
+);
+
+INSERT INTO TransactionsTyp (TranTypID, Description)
+VALUES (1, 'Einzahlung'),
+       (2, 'Auszahlung'),
+       (3, 'Überweisen');
+
+/* ******************************************************************************** */
+
+CREATE TABLE Login
+(
+    LoginID    INT PRIMARY KEY AUTOINCREMENT,
+    LoginTyp   INT NOT NULL,
+    Password   TEXT,
+    PIN        INT,
+    CustomerID INT,
+    StaffID    INT,
+    CardID     INT,
+    FOREIGN KEY (CardID) REFERENCES Card (CardID),
+    FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+    FOREIGN KEY (StaffID) REFERENCES Staff (StaffID)
+);
+
+INSERT INTO Login (LoginTyp, Password, PIN, CustomerID, StaffID, CardID)
+VALUES (1, 'password1', NULL, 1, NULL, NULL),
+       (1, 'password2', NULL, 2, NULL, NULL),
+       (1, 'password3', NULL, 3, NULL, NULL),
+       (1, 'password4', NULL, 4, NULL, NULL),
+       (1, 'password5', NULL, 5, NULL, NULL),
+       (1, 'password6', NULL, 6, NULL, NULL),
+       (1, 'password7', NULL, 7, NULL, NULL),
+       (1, 'password8', NULL, 8, NULL, NULL),
+       (1, 'password9', NULL, 9, NULL, NULL),
+       (1, 'password10', NULL, 10, NULL, NULL),
+       (3, NULL, 1234, NULL, NULL, 1),
+       (3, NULL, 2345, NULL, NULL, 2),
+       (3, NULL, 3456, NULL, NULL, 3),
+       (3, NULL, 4567, NULL, NULL, 4),
+       (3, NULL, 5678, NULL, NULL, 5),
+       (3, NULL, 6789, NULL, NULL, 6),
+       (3, NULL, 7890, NULL, NULL, 7),
+       (3, NULL, 8901, NULL, NULL, 8),
+       (3, NULL, 9012, NULL, NULL, 9),
+       (3, NULL, 0123, NULL, NULL, 10),
+       (2, 'password11', NULL, NULL, 1, NULL),
+       (2, 'password12', NULL, NULL, 2, NULL),
+       (2, 'password13', NULL, NULL, 3, NULL),
+       (2, 'password14', NULL, NULL, 4, NULL);
+
+/* ******************************************************************************** */
+
+CREATE TABLE LoginTyp
+(
+    LoginTyp    INT  NOT NULL,
+    Description TEXT NOT NULL,
+    FOREIGN KEY (LoginTyp) REFERENCES Login (LoginTyp)
+);
+
+INSERT INTO LoginTyp (LoginTyp, Description)
+VALUES (1, 'Customer'),
+       (2, 'Staff'),
+       (3, 'Card');
+
+/* ******************************************************************************** */
+
+CREATE TABLE Sex
+(
+    SexID          INT  PRIMARY KEY AUTOINCREMENT,
+    SexDescription TEXT NOT NULL,
+    Salutation     TEXT NOT NULL
+);
+
+INSERT INTO Sex (SexDescription, Salutation)
+VALUES ('M', 'Herr'),
+       ('W', 'Frau'),
+       ('D', '');
+
+/* ******************************************************************************** */

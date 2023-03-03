@@ -1,0 +1,16 @@
+DROP TABLE Customer;
+DROP TABLE Contact;
+DROP TABLE City;
+DROP TABLE Country;
+DROP TABLE Account;
+DROP TABLE Transactions;
+DROP TABLE Staff;
+DROP TABLE StaffContact;
+DROP TABLE AccTypStaff;
+DROP TABLE AccountTyp;
+DROP TABLE Card;
+DROP TABLE Bank;
+DROP TABLE AccStatus;
+DROP TABLE TransactionsTyp;
+DROP TABLE Login;
+DROP TABLE LoginTyp;
