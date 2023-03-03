@@ -2,8 +2,6 @@
 Banksystem
 VP, GI, SD Projekt
 
-# Link VP Aufgaben
-https://docs.google.com/document/d/1dv1EPE_ydI9iNt9PUlzkRl7IJtoywFoNFPIKM6Xz82s/edit
 
 <!--.
 # Aufgabenteilung
